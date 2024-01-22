@@ -1,4 +1,6 @@
+using DotNet8WebApi.HangfireApp.Services;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,11 @@ builder.Services.AddHangfire(configuration => configuration
        .UseSqlServerStorage(builder.Configuration.GetConnectionString("DbConnection")));
 
 builder.Services.AddHangfireServer();
+
+builder.Services.AddDbContext<AppDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"));
+});
 
 var app = builder.Build();
 var backgroundJobs = app.Services.GetRequiredService<IBackgroundJobClient>();
