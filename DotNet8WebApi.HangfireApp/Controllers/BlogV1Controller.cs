@@ -208,7 +208,7 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             {
                 message = "Data Not Found.";
                 Console.WriteLine(message);
-                return;
+                return message;
             }
 
             _context.blogs.Remove(item);
