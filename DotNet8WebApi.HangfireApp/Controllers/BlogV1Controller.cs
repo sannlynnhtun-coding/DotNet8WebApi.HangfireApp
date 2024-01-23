@@ -169,13 +169,15 @@ namespace DotNet8WebApi.HangfireApp.Controllers
         }
 
         [NonAction]
-        public async Task H_BlogPatch(int id, BlogViewModel requestModel)
+        public async Task<string> H_BlogPatch(int id, BlogViewModel requestModel)
         {
+            string message = string.Empty;
             var item = await _context.blogs.FirstOrDefaultAsync(x => x.Blog_Id == id);
             if (item is null)
             {
-                Console.WriteLine("Patch Data Not Found.");
-                return;
+                message = "Patch Data Not Found.";
+                Console.WriteLine(message);
+                return message;
             }
 
             if (!string.IsNullOrEmpty(requestModel.BlogAuthor))
@@ -192,22 +194,28 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             }
 
             var result = await _context.SaveChangesAsync();
-            Console.WriteLine(result > 0 ? "Patch Successful." : "Patch Fail.");
+            message = result > 0 ? "Patch Successful." : "Patch Fail.";
+            Console.WriteLine(message);
+            return message; 
         }
 
         [NonAction]
-        public async Task H_BlogDelete(int id)
+        public async Task<string> H_BlogDelete(int id)
         {
+            string message = string.Empty;
             var item = await _context.blogs.FirstOrDefaultAsync(x => x.Blog_Id == id);
             if (item is null)
             {
-                Console.WriteLine("Data Not Found.");
+                message = "Data Not Found.";
+                Console.WriteLine(message);
                 return;
             }
 
             _context.blogs.Remove(item);
             var result = await _context.SaveChangesAsync();
-            Console.WriteLine(result > 0 ? "Delete Successful." : "Delete Fail.");
+            message = result > 0 ? "Delete Successful." : "Delete Fail.";
+            Console.WriteLine(message);
+            return message;
         }
     }
 }
