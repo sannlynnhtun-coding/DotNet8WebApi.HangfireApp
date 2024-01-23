@@ -54,6 +54,28 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             return Ok(model);
         }
 
+        [HttpPost]
+        [Route("create-job/{expression}")]
+        public IActionResult BlogCreate(string expression, BlogViewModel requestModel)
+        {
+            var model = new BlogModel
+            {
+                Blog_Title = requestModel.BlogTitle,
+                Blog_Author = requestModel.BlogAuthor,
+                Blog_Content = requestModel.BlogContent
+            };
+            //RecurringJob.AddOrUpdate(
+            //   "BlogCreate",
+            //   () => H_BlogCreate(model),
+            //   Cron.Minutely);
+
+            RecurringJob.AddOrUpdate(
+               "BlogCreate",
+               () => H_BlogCreate(model),
+               expression);
+            return Ok(model);
+        }
+
         [HttpPut("{id}")]
         public IActionResult BlogUpdate(int id, BlogViewModel requestModel)
         {
@@ -84,6 +106,14 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             var jobId = BackgroundJob.Enqueue(() => H_BlogDelete(id));
             var result = string.IsNullOrWhiteSpace(jobId) ? "Delete Fail." : "Delete Success.";
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("remove-job/{id}")]
+        public IActionResult RemoveJob(string id)
+        {
+            RecurringJob.RemoveIfExists(id);
+            return Ok();
         }
 
         [NonAction]
