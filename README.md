@@ -83,7 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHangfireDashboard(); // Add this line
+app.UseHangfireDashboard("/cron"); // Add this line
 
 app.UseHttpsRedirection();
 
