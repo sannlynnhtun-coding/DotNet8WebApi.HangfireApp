@@ -42,13 +42,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
        .UseSimpleAssemblyNameTypeSerializer()
        .UseRecommendedSerializerSettings()
-       .UseSqlServerStorage(builder.Configuration.GetConnectionString("DbConnection")));
+       .UseSqlServerStorage(builder.Configuration.GetConnectionString("DbConnection"))); // Add this line
 
-builder.Services.AddHangfireServer();
+builder.Services.AddHangfireServer(); // Add this line
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
@@ -56,23 +57,24 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 var app = builder.Build();
-var backgroundJobs = app.Services.GetRequiredService<IBackgroundJobClient>();
-var jobId = backgroundJobs.Enqueue(() => Console.WriteLine("Hello from Hangfire!"));
+
+var backgroundJobs = app.Services.GetRequiredService<IBackgroundJobClient>(); // Add this line
+var jobId = backgroundJobs.Enqueue(() => Console.WriteLine("Hello from Hangfire!")); // Add this line
 
 backgroundJobs.Schedule(
    () => Console.WriteLine("Delayed!"),
-   TimeSpan.FromSeconds(5));
+   TimeSpan.FromSeconds(5)); // Add this line
 
 RecurringJob.AddOrUpdate(
     "myrecurringjob",
     () => Console.WriteLine("Recurring!"),
-    Cron.Minutely);
+    Cron.Minutely); // Add this line
 
-RecurringJob.RemoveIfExists("myrecurringjob");
+RecurringJob.RemoveIfExists("myrecurringjob"); // Add this line
 
 backgroundJobs.ContinueJobWith(
     jobId,
-    () => Console.WriteLine("Continuation!"));
+    () => Console.WriteLine("Continuation!")); // Add this line
 
 
 // Configure the HTTP request pipeline.
@@ -81,7 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("/cron"); // Add this line
 
 app.UseHttpsRedirection();
 
