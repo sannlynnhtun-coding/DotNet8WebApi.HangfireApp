@@ -77,6 +77,22 @@ namespace DotNet8WebApi.HangfireApp.Controllers
         }
 
         [HttpPut("{id}")]
+        [Route("update-job/{expression}")]
+        public IActionResult BlogUpdate(string expression,int id, BlogViewModel requestModel)
+        {
+            var model = new BlogModel
+            {
+                Blog_Title = requestModel.BlogTitle,
+                Blog_Author = requestModel.BlogAuthor,
+                Blog_Content = requestModel.BlogContent
+            };
+            RecurringJob.AddOrUpdate(
+               "BlogUpdate", () => H_BlogUpdate(id, model),
+               expression);
+            return Ok(model);
+        }
+
+        [HttpPut("{id}")]
         public IActionResult BlogUpdate(int id, BlogViewModel requestModel)
         {
             var model = new BlogModel
@@ -89,6 +105,16 @@ namespace DotNet8WebApi.HangfireApp.Controllers
                "BlogUpdate", () => H_BlogUpdate(id, model),
                Cron.Minutely);
             return Ok(model);
+        }
+
+        [HttpPatch("{id}")]
+        [Route("patch-job/{expression}")]
+        public IActionResult BlogPatch(string expression, int id, BlogViewModel requestModel)
+        {
+            RecurringJob.AddOrUpdate(
+               "BlogPatch", () => H_BlogPatch(id, requestModel),
+               expression);
+            return Ok(requestModel);
         }
 
         [HttpPatch("{id}")]
