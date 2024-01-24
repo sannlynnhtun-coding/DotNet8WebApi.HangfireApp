@@ -24,23 +24,23 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 var app = builder.Build();
-var backgroundJobs = app.Services.GetRequiredService<IBackgroundJobClient>();
-var jobId = backgroundJobs.Enqueue(() => Console.WriteLine("Hello from Hangfire!"));
+//var backgroundJobs = app.Services.GetRequiredService<IBackgroundJobClient>();
+//var jobId = backgroundJobs.Enqueue(() => Console.WriteLine("Hello from Hangfire!"));
 
-backgroundJobs.Schedule(
-   () => Console.WriteLine("Delayed!"),
-   TimeSpan.FromSeconds(5));
+//backgroundJobs.Schedule(
+//   () => Console.WriteLine("Delayed!"),
+//   TimeSpan.FromSeconds(5));
 
-RecurringJob.AddOrUpdate(
-    "myrecurringjob",
-    () => Console.WriteLine("Recurring!"),
-    Cron.Minutely);
+//RecurringJob.AddOrUpdate(
+//    "myrecurringjob",
+//    () => Console.WriteLine("Recurring!"),
+//    Cron.Minutely);
 
-RecurringJob.RemoveIfExists("myrecurringjob");
+//RecurringJob.RemoveIfExists("myrecurringjob");
 
-backgroundJobs.ContinueJobWith(
-    jobId,
-    () => Console.WriteLine("Continuation!"));
+//backgroundJobs.ContinueJobWith(
+//    jobId,
+//    () => Console.WriteLine("Continuation!"));
 
 
 // Configure the HTTP request pipeline.

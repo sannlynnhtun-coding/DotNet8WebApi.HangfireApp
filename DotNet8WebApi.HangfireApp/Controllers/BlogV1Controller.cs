@@ -76,8 +76,8 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             return Ok(model);
         }
 
-        [HttpPut("{id}")]
-        [Route("update-job/{expression}")]
+        [HttpPut]
+        [Route("update-job/{id}/{expression}")]
         public IActionResult BlogUpdate(string expression,int id, BlogViewModel requestModel)
         {
             var model = new BlogModel
@@ -107,8 +107,8 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             return Ok(model);
         }
 
-        [HttpPatch("{id}")]
-        [Route("patch-job/{expression}")]
+        [HttpPatch]
+        [Route("patch-job/{id}/{expression}")]
         public IActionResult BlogPatch(string expression, int id, BlogViewModel requestModel)
         {
             RecurringJob.AddOrUpdate(
@@ -143,21 +143,25 @@ namespace DotNet8WebApi.HangfireApp.Controllers
         }
 
         [NonAction]
-        public async Task H_BlogCreate(BlogModel model)
+        public async Task<string> H_BlogCreate(BlogModel model)
         {
             await _context.blogs.AddAsync(model);
             var result = await _context.SaveChangesAsync();
-            Console.WriteLine(result > 0 ? "Saving Successful." : "Saving Fail.");
+            var message = result > 0 ? "Saving Successful." : "Saving Fail.";
+            Console.WriteLine(message);
+            return message;
         }
 
         [NonAction]
-        public async Task H_BlogUpdate(int id, BlogModel model)
+        public async Task<string> H_BlogUpdate(int id, BlogModel model)
         {
+            string message = string.Empty;
             var item = await _context.blogs.FirstOrDefaultAsync(x => x.Blog_Id == id);
             if (item is null)
             {
-                Console.WriteLine("Update Data Not Found.");
-                return;
+                message = "Update Data Not Found.";
+                Console.WriteLine(message);
+                return message;
             }
 
             item.Blog_Title = model.Blog_Title;
@@ -165,7 +169,9 @@ namespace DotNet8WebApi.HangfireApp.Controllers
             item.Blog_Content = model.Blog_Content;
 
             var result = await _context.SaveChangesAsync();
-            Console.WriteLine(result > 0 ? "Update Successful." : "Update Fail.");
+            message = result > 0 ? "Update Successful." : "Update Fail.";
+            Console.WriteLine(message);
+            return message;
         }
 
         [NonAction]
