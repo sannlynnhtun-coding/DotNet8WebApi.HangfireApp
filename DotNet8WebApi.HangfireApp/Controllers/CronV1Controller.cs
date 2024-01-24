@@ -11,11 +11,11 @@ namespace DotNet8WebApi.HangfireApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogV1Controller : ControllerBase
+    public class CronV1Controller : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public BlogV1Controller(AppDbContext context)
+        public CronV1Controller(AppDbContext context)
         {
             _context = context;
         }
